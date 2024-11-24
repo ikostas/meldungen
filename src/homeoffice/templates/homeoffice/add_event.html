@@ -1,0 +1,15 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}{{ pagename }}{% endblock %}
+{% block content %}
+<h1>{{ pagename }}</h1>
+  <form method="post" enctype="multipart/form-data" class="pure-form pure-form-stacked" action="{% if add %}{% url 'add_event' event_type %}">{% else %}{% url 'event_edit' id %}">{% endif %}
+  <fieldset>
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" value="Einreichen" class="pure-button pure-button-primary">Save</button>
+  </fieldset>
+</form>
+{% if event_type != 'holiday' %}
+{% include 'homeoffice/legend.html' %}
+{% endif %}
+{% endblock %}

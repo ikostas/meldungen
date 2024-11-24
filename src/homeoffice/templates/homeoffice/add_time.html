@@ -1,0 +1,17 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}{{ pagename }}{% endblock %}
+  {% block content %}
+<h1>{{ pagename }}</h1>
+<ul>
+  <li>Employee: {{ employee }}</li>
+  <li>Year: {{ year }}</li>
+  <li>Month: {{ month }}</li>
+</ul>
+<form method="post" enctype="multipart/form-data" class="pure-form pure-form-stacked" action="{% url 'add_time' line_type timesheet %}">
+  <fieldset>
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" value="Einreichen" class="pure-button pure-button-primary">Save</button>
+  </fieldset>
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+  <p>The legend</p>
+  <table class="pure-table-bordered pure-table">
+    <thead>
+      <tr>
+        <th>Absence type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>{% for name, description, color, is_working_time in absence_types %}
+      <tr>
+        <td style="background-color: {{ color }}">{{ name }}</td>
+        <td>{{ description }}</td>
+      </tr>{% endfor %}
+    </tbody>
+  </table>

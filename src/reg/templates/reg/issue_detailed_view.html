@@ -1,0 +1,67 @@
+{% extends "reg/base.html" %}
+{% block title %}{{ pagename }}{% endblock %}
+{% block content %}
+<h1>{{ pagename }}</h1>
+<p><a href="{{ listurl }}"><span class="material-symbols-outlined">arrow_back</span> Back to the list</a></p>
+{% if perms.reg.change_issue %}
+<p><a href="{% url 'issue_status_change' issue.id %}" class="pure-button pure-button-primary">
+  {% if issue.status == 'open' %}
+  Close 
+  {% else %}
+  Open 
+  {% endif %}
+</a></p>
+{% endif %}
+<dl>
+  <dt><strong>Keyword</strong></dt>
+  <dd>{{ issue.name }}</dd>
+  <dt><strong>Creation date</strong></dt>
+  <dd>{{ issue.date }}</dd>
+  <dt><strong>Project number</strong></dt>
+  <dd>{{ issue.project }}</dd>
+  <dt><strong>Defect description</strong></dt>
+  <dd>{{ issue.description }}</dd>
+  <dt><strong>Created at</strong></dt>
+  <dd>{{ issue.created }}</dd>
+  <dt><strong>Created by</strong></dt>
+  <dd>{{ issue.first_name }} {{ issue.last_name }}</dd>
+  <dt><strong>Status</strong></dt>
+  <dd>{{ issue.get_status_display }}</dd>
+</dl>
+{% if pics %}
+<table>
+  <thead>
+    <tr>
+      <th>Photo</th>
+      {% if perms.reg.delete_issuepic %}
+      <th>Action</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for image in pics %}
+    <tr>
+      <td><a href="{{ image.pic.url }}"><img src="{{ image.pic.url }}" width="100px" alt="pic"></a></td>
+      {% if perms.reg.delete_issuepic %}
+      <td><a href="{% url 'issue_delete_pic' image.id issue.id %}"><span class="material-symbols-outlined">delete</span></a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+<form method="post" class="pure-form pure-form-stacked" action="{% url 'issue_detailed' issue.id %}">
+  <fieldset>
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" name="add" value="add" class="pure-button pure-button-primary">Add a comment</button>
+  </fieldset>
+</form>
+{% for i in comments %}
+<pre>{{ i.comment }}</pre><p><em> &ndash; {{ i.first_name }} {{ i.last_name }}, {{ i.created}}</em>
+  {% if perms.reg.delete_issuecomment %}
+  <a href="{% url 'issue_delete_comment' i.id issue.id %}"><span class="material-symbols-outlined">delete</span></a>
+  {% endif %}
+</p>
+{% endfor %}
+{% endblock %}

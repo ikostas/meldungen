@@ -1,0 +1,41 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}Standard working hours{% endblock %}
+  {% block content %}
+  <h1>Standard working hours</h1>
+  <p>Employee: {{ e_full_name}}</p>
+  <p>Absence group for the employee: {{ e_abs_group }}</p>
+  <p>Employee group: {{ e_group }}</p>
+  <table class="pure-table pure-table-bordered">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Working time, period</th>
+        <th>Pause, minutes</th>
+        <th>Working hours</th>
+      </tr>
+    </thead>
+    <tbody>{% for day in day_dict_arr %}
+      <tr>
+        <td>{{ day.day }}</td>
+        <td>{% for start, finish, link in day.times_for_tpl %}{{ start }} &ndash; {{ finish }} <a href="{{ link }}">[x]</a><br>{% endfor %}</td>
+        <td>{% if day.pause != 0 %}{{ day.pause }}{% endif %}</td>
+        <td>{% if day.working_time != 0 %}{{ day.working_time }}{% endif %}</td>
+      </tr>{% endfor %}
+      <tr>
+        <td>In total</td>
+        <td></td>
+        <td></td>
+        <td>{% if working_time_week != 0 %}{{ working_time_week }}{% endif %}</td>
+      </tr>
+    </tbody>
+  </table>
+<h2>Add time</h2>
+  <p>Please add time in the format: hh:mm.</p>
+  <form method="post" class="pure-form pure-form-stacked" action="{% url 'default_time' %}">
+    <fieldset>
+      {% csrf_token %}
+      {{ form }}
+      <button type="submit" value="filter" class="pure-button pure-button-primary">Save</button>
+    </fieldset>
+  </form>
+  {% endblock %}

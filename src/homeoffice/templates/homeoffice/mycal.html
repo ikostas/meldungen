@@ -1,0 +1,33 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}My calendar{% endblock %}
+  {% block content %}
+  <h1>Calendar for {{ month }}.{{ year }}</h1>
+  <p>{{ form.non_field_errors }}</p>
+  <form method="post" class="pure-form" action="{% url 'mycal' %}">
+    <fieldset>
+      {% csrf_token %}
+      {{ form.year_switch.label_tag }}
+      {{ form.year_switch }}
+      {{ form.month_switch.label_tag }}
+      {{ form.month_switch }}
+      <button type="submit" value="filter" class="pure-button pure-button-primary">Go</button>
+      <a href="{% url 'add_event' 'employee_event' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">add_circle</span> Add absence event</a>
+    </fieldset>
+  </form>
+  <p>Employee: {{ e_full_name}}</p>
+  <p>Absence group: {{ e_abs_group }}</p>
+  <p>Employee group: {{ e_group }}</p>
+  <table class="pure-table">
+    <thead>
+      <tr>{% for day in weekdays %}
+        <th>{{ day }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>{% for rows in month_table %}
+      <tr>{% for cell in rows %}
+        <td{% for e_color in e_colors %}{% if cell == e_color.day %} style="background-color:{{ e_color.color }}"{% endif %}{% endfor %}{% if today_day == cell and today_day != 0 %} id="today"{% endif %}>{% if cell != 0 %}{{ cell }} {% for event in employee_events %}{% if cell == event.day %}{% spaceless %}{% include 'homeoffice/fractions.html' %}{% endspaceless %} {% endif %}{% endfor %}{% endif %}</td>{% endfor %}
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+  {% include 'homeoffice/legend.html' %}
+  {% endblock %}

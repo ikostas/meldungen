@@ -1,0 +1,40 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}Calendar{% endblock %}
+  {% block content %}
+  <h1>Time sheet for {{ month }}.{{ year }}</h1>
+  <p>Employee: {{ e_full_name}}</p>
+  <p>Absence group: {{ e_abs_group }}</p>
+  <p>Employee group: {{ e_group }}</p>
+  <form method="post" class="pure-form" action="{% url 'timesheet' %}">
+    <fieldset>
+      {% csrf_token %}
+      {{ form.year_switch.label_tag }}
+      {{ form.year_switch }}
+      {{ form.month_switch.label_tag }}
+      {{ form.month_switch }}
+      <button type="submit" value="filter" class="pure-button pure-button-primary">Go</button>
+    </fieldset>
+  </form>
+  <table class="pure-table-bordered pure-table">
+    <thead>
+      <tr>
+        <th>Weekday</th>{% for day in monthweekday %}<th>{{ day }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th>Day</th>{% for day in monthdays %}
+        <th{% if today_day == day %} id="today"{% endif %}>{{ day }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>{% for row_header, row_style, time_sheet_arr in first_column %}
+      <tr>
+        <td>{% if row_style %}<strong>{{ row_header }}</strong>{% else %}{{ row_header }}{% endif %}</td>{% for cell in time_sheet_arr %}
+        <td style="background-color: {{ cell.color }}">{% if cell.hours != 0 %}{{ cell.hours }}{% endif %}</td>{% endfor %}
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+  <p>(1) Recording of project hours and non-project-related hours.</p>
+  <p>(2) Hours based on working time and breaks.</p>
+  <p>
+    <a href="{% url 'add_time' 'work' timesheet %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">more_time</span> Edit work time</a>
+      <a href="{% url 'add_time' 'project' timesheet %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">data_table</span> Edit project time</a></p>
+  {% endblock %}

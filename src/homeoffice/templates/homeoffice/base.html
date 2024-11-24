@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    {% block head %}
+    {% load static %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'homeoffice/css/grids-responsive-min.css' %}">
+    <link rel="stylesheet" href="{% static 'homeoffice/css/pure-min.css' %}">
+    <link rel="stylesheet" href="{% static 'homeoffice/css/style.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}" >
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>{% block title %}{% endblock %} - Homeoffice</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div> 
+      <div class="header">
+        <div class="pure-menu pure-menu-horizontal">
+          <a class="pure-menu-heading" href="{% url 'calendar' %}">Homeoffice</a>
+          <ul class="pure-menu-list">
+            <li class="pure-menu-item pure-menu-selected">
+              <a href="{% url 'calendar' %}" class="pure-menu-link"><span class="material-symbols-outlined">home</span></a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="pure-menu-item" ><a href="/reg" class="pure-menu-link"><span class="material-symbols-outlined">add_comment</span></a></li>
+            <li class="pure-menu-item"><a href="{% url 'mycal' %}" class="pure-menu-link"><span class="material-symbols-outlined">person</span></a></li>
+            <li class="pure-menu-item"><a href="{% url 'timesheet' %}" class="pure-menu-link"><span class="material-symbols-outlined">punch_clock</span></a></li>
+            <li class="pure-menu-item"><a href="{% url 'default_time' %}" class="pure-menu-link"><span class="material-symbols-outlined">tune</span></a></li>
+            <li class="pure-menu-item"><a href="{% url 'montage' %}" class="pure-menu-link"><span class="material-symbols-outlined">engineering</span></a></li>
+            <li class="pure-menu-item"><a href="{% url 'mycal_montage' %}" class="pure-menu-link"><span class="material-symbols-outlined">event_upcoming</span></a></li>
+            
+            <li class="pure-menu-item">
+              <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="pure-button" type="submit"><span class="material-symbols-outlined">logout</span></button>
+              </form>
+            </li>
+            {% else %}
+            <li class="pure-menu-item">
+              <a href="{% url 'login' %}" class="pure-menu-link"><span class="material-symbols-outlined">login</span></a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="content pure-u-1">
+        {% if messages %}
+        {% for message in messages %}
+        <div{% if message.tags %} class="alert {{ message.tags }}"{% endif %}>
+          <span class="closebtn">&times;</span>
+          {{ message }}</div>
+        {% endfor %}
+        <script>
+        var acc = document.getElementsByClassName("closebtn");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+        acc[i].onclick = function(){
+        var div = this.parentElement;
+        div.style.opacity = "0";
+        setTimeout(function(){ div.style.display = "none"; }, 600);
+        }
+        }
+        </script>
+        {% endif %}
+        {% block content %}{% endblock %}</div>
+      <div class="footer">
+        {% block footer %}&copy; Copyright 2024 by {% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

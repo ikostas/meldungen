@@ -1,0 +1,12 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}{{ pagename }}{% endblock %}
+  {% block content %}
+<h1>{{ pagename }}</h1>
+<form method="post" class="pure-form pure-form-stacked" action="{% if id %}{% url posturl id %}{% else %}{% url posturl %}{% endif %}">
+  <fieldset>
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" value="Einreichen" class="pure-button pure-button-primary">Save</button>
+  </fieldset>
+</form>
+{% endblock %}

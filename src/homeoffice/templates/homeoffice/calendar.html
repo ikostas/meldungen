@@ -1,0 +1,55 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}Calendar{% endblock %}
+  {% block content %}
+  <h1>Calendar for {{ month }}.{{ year }}</h1>
+  <form method="post" class="pure-form" action="{% url 'calendar' %}">
+    {% csrf_token %}
+    <fieldset>
+      {{ form.year_switch.label_tag }}
+      {{ form.year_switch }}
+      {{ form.month_switch.label_tag }}
+      {{ form.month_switch }}
+      <button type="submit" value="filter" class="pure-button pure-button-primary">Go</button>
+      <a href="{% url 'add_event' 'employee_event' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">add_circle</span> Absence event</a>
+  {% if perms.homeoffice.change_all %}
+      <a href="{% url 'add_event' 'employee_group_event' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">group</span> Group event</a>
+      <a href="{% url 'add_event' 'holiday' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">celebration</span> Holiday</a>
+      <a href="{% url 'add_event' 'other_employee_event' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">person</span> Employee</a>{% endif %}
+    </fieldset>
+  </form>
+  <table class="pure-table-bordered pure-table">
+    <thead>
+      <tr>
+        <th>Day</th>
+        {% for day in monthweekday %}<th>{{ day }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th>Employee \ Day</th>{% for day in monthdays %}
+        <th{% if today_day == day %} id="today"{% endif %}>{{ day }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Holidays</strong></td>{% for day in monthdays %}
+          <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}>{% for event in holidays %}{% if day == event.day %}{% spaceless %}{% include 'homeoffice/fractions.html' %}{% endspaceless %}{% endif %}{% endfor %}</td>{% endfor %}
+        </tr>{% for group in employee_groups %}
+      <tr>
+        <td>{{ group.name }}</td>
+        <td colspan=31></td>
+      </tr>{% for e_name, e_ag, e_group, e_id in employees %}{% if e_group == group.name %}
+      <tr>
+        <td>{{ e_name }}</td>{% for day in monthdays %}
+        <td style="background-color:{% for e_color in e_colors %}{% if day == e_color.day and e_id == e_color.e_id %}{{ e_color.color }}{% endif %}{% endfor %}">{% for event in employee_events %}{% if day == event.day and e_id == event.employee %}{% spaceless %}{% include 'homeoffice/fractions.html' %}{% endspaceless %} {% endif %}{% endfor %}</td>{% endfor %}
+      </tr>{% endif %}
+      {% endfor %}{% endfor %}
+       <tr>
+        <td>Group events</td>
+        <td colspan=31></td>
+      </tr>{% for group in eag %}
+        <tr>
+          <td>{{ group.name }}</td>{% for day in monthdays %}
+          <td style="background-color:{% for e_color in eag_colors %}{% if day == e_color.day and group.id == e_color.eag %}{{ e_color.color }}{% endif %}{% endfor %}">{% for event in eag_events %}{% if day == event.day and group.id == event.employee_group %}{% spaceless %}{% include 'homeoffice/fractions.html' %}{% endspaceless %} {% endif %}{% endfor %}</td>{% endfor %}
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+  {% endblock %}

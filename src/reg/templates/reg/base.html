@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    {% block head %}
+    {% load static %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'reg/css/grids-responsive-min.css' %}">
+    <link rel="stylesheet" href="{% static 'reg/css/pure-min.css' %}">
+    <link rel="stylesheet" href="{% static 'reg/css/style.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}" >
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>{% block title %}{% endblock %} - Reports</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div> 
+      <div class="header">
+        <div class="pure-menu pure-menu-horizontal">
+          <a class="pure-menu-heading" href="{% url 'menu' %}">Reports</a>
+          <ul class="pure-menu-list">
+            <li class="pure-menu-item pure-menu-selected">
+              <a href="{% url 'menu' %}" class="pure-menu-link"><span class="material-symbols-outlined">home</span></a>
+            </li>
+            {% if user.is_authenticated %}
+              {% if perms.reg.view_issue %}
+            <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+              <a href="#" class="pure-menu-link"><span class="material-symbols-outlined">visibility</span></a>
+              <ul class="pure-menu-children">
+                <li class="pure-menu-item">
+                  <a href="{% url 'issue_list' 'defect' %}" class="pure-menu-link"><span class="material-symbols-outlined">report</span> Submit error message</a></li>
+                <li class="pure-menu-item">
+                  <a href="{% url 'issue_list' 'danger' %}" class="pure-menu-link"><span class="material-symbols-outlined">warning</span> Unsafe situation</a></li>
+                <li class="pure-menu-item">
+                  <a href="{% url 'issue_list' 'suggest' %}" class="pure-menu-link"><span class="material-symbols-outlined">lightbulb</span> Suggestion for improvement</a></li>
+              </ul></li>
+              {% endif %}
+            <li class="pure-menu-item"><a href="/homeoffice" class="pure-menu-link"><span class="material-symbols-outlined">calendar_month</span></a></li>
+            <li class="pure-menu-item">
+              <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="pure-button" type="submit"><span class="material-symbols-outlined">logout</span></button>
+              </form>
+            </li>
+            {% else %}
+            <li class="pure-menu-item">
+              <a href="{% url 'login' %}" class="pure-menu-link"><span class="material-symbols-outlined">login</span></a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="content pure-u-1">
+        {% if messages %}
+        {% for message in messages %}
+        <div{% if message.tags %} class="alert {{ message.tags }}"{% endif %}>
+          <span class="closebtn">&times;</span>
+          {{ message }}</div>
+        {% endfor %}
+        <script>
+        var acc = document.getElementsByClassName("closebtn");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+        acc[i].onclick = function(){
+        var div = this.parentElement;
+        div.style.opacity = "0";
+        setTimeout(function(){ div.style.display = "none"; }, 600);
+        }
+        }
+        </script>
+        {% endif %}
+        {% block content %}{% endblock %}</div>
+      <div class="footer">
+        {% block footer %}&copy; Copyright 2024 by {% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

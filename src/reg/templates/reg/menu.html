@@ -1,0 +1,14 @@
+{% extends "reg/base.html" %}
+	{% block title %}Menu{% endblock %}
+	{% block content %}
+	<h1>Menu</h1>
+	<div class="pure-menu restricted-width">
+		<ul class="pure-menu-list centered-menu">
+			<li class="pure-menu-item"><a href="{% url 'issue_add' 'defect' %}" class="pure-menu-link pure-button pure-button-primary margin3px"><span class="material-symbols-outlined">report</span> Submit error message</a></li>
+			<li class="pure-menu-item"><a href="{% url 'issue_add' 'suggest' %}" class="pure-menu-link pure-button pure-button-primary margin3px"><span class="material-symbols-outlined">lightbulb</span> Suggestion for improvement</a></li>
+			<li class="pure-menu-item"><a href="{% url 'issue_add' 'danger' %}" class="pure-menu-link pure-button pure-button-primary margin3px"><span class="material-symbols-outlined">warning</span> Unsafe situation</a></li>
+			<li class="pure-menu-item"><a href="{% url 'satisfied' %}" class="pure-menu-link pure-button pure-button-primary margin3px"><span class="material-symbols-outlined">sentiment_satisfied</span> Customer satisfaction</a></li>
+		</ul>
+	</div>
+	{% endblock %}
+

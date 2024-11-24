@@ -1,0 +1,60 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}Assembly calendar{% endblock %}
+  {% block content %}
+  <h1>Calendar for {{ month }}.{{ year }}</h1>
+  <form method="post" class="pure-form" action="{% url 'montage' %}">
+    {% csrf_token %}
+    <fieldset>
+      {{ form.year_switch.label_tag }}
+      {{ form.year_switch }}
+      {{ form.month_switch.label_tag }}
+      {{ form.month_switch }}
+      <button type="submit" value="filter" class="pure-button pure-button-primary">Go</button>{% if perms.homeoffice.change_task %}
+      <a href="{% url 'add_task' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">task_alt</span> Add a task</a>
+      <a href="{% url 'add_service' %}" class="pure-button pure-button-primary"><span class="material-symbols-outlined">construction</span> Add a service</a>{% endif %}
+    </fieldset>
+  </form>
+  <table class="pure-table-bordered pure-table">
+    <thead>
+      <tr>
+        <th>CW</th>
+        {% for week_number in week_numbers %}<th style="text-align: center" colspan="{{ week_number.colspan }}">{{ week_number.week_number }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th>Day</th>
+        {% for day in monthweekday %}<th>{{ day }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th>Project \ Day</th>{% for day in monthday %}
+        <th{% if today_day == day %} id="today"{% endif %}>{{ day }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Holidays</strong></td>{% for day in monthday %}
+        <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}>{% for event in holidays %}{% if day == event.day %}<p style="text-align:center">{% spaceless %}{% include 'homeoffice/fractions.html' %}{% endspaceless %}</p>{% endif %}{% endfor %}</td>{% endfor %}
+        </tr>{% for place in places %}
+      <tr>
+        <td>{{ place }}</td>{% for day in monthday %}
+        <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}><ul>{% for task in tasks %}{% if task.day == day and task.place == place.id %}<li><span style="color:#2980b9">{{ task.car }}</span>/{{ task.worker }}{% if perms.homeoffice.change_task %} <a href="{% url 'delete_task' task.id %}">[x]</a>&nbsp;<a href="{% url 'edit_task' task.id %}">[b]</a>{% endif %}</li>{% endif %}{% endfor %}</ul>{% if perms.homeoffice.change_task %}<p style="text-align:center"><a href="{% url 'add_date_task' day month year place.id %}"><span class="material-symbols-outlined">add_circle</span></a></p>{% endif %}</td>{% endfor %}
+      </tr>{% endfor %}
+
+      <tr>
+        <td><strong>Free assemblers</strong></td>{% for day in monthday %}
+        <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}><ul>{% for e_day, e_list in employees %}{% if day == e_day %}{% for e_fn, e_ln in e_list %}<li>{{ e_fn }} {{ e_ln}}</li>{% endfor %}{% endif %}{% endfor %}</ul></td>{% endfor %}
+      </tr>
+      <tr>
+        <td><strong>Free cars</strong></td>{% for day in monthday %}
+        <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}><ul>{% for car_day, car_list in free_cars %}{% if day == car_day %}{% for car in car_list %}<li>{{ car }}</li>{% endfor %}{% endif %}{% endfor %}</ul></td>{% endfor %}
+      </tr>
+      <tr>
+        <td><strong>Absent assemblers</strong></td>{% for day in monthday %}
+        <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}><ul>{% for a_day, a_list in absence_list %}{% if day == a_day %}{% for absence in a_list %}<li>{{ absence }}</li>{% endfor %}{% endif %}{% endfor %}</ul></td>{% endfor %}
+      </tr>
+      <tr>
+        <td><strong>Cars in service</strong></td>{% for day in monthday %}
+        <td{% for weekend in weekends %}{% if day == weekend.day %} style="background-color: {{ weekend.color }}"{% endif %}{% endfor %}><ul>{% for service in service_list %}{% if day == service.day %}<li>{{ service.car }}{% if perms.homeoffice.change_task %} <a href="{% url 'delete_service' service.id %}">[x]</a>&nbsp;<a href="{% url 'edit_service' service.id %}">[b]</a>{% endif %}</li>{% endif %}{% endfor %}</ul></td>{% endfor %}
+      </tr>
+    </tbody>
+  </table>
+  {% endblock %}

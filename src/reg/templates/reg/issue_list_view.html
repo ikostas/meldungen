@@ -1,0 +1,57 @@
+{% extends "reg/base.html" %}
+{% block title %}{{ pagename }}{% endblock %}
+{% block content %}
+<h1>{{ pagename }}</h1>
+<form method="post" class="pure-form" action="{{ listurl }}">
+  <fieldset>
+    {% csrf_token %}
+    {{ form.data_filter.label_tag }}
+    {{ form.data_filter }}
+    {{ form.type_filter.label_tag }}
+    {{ form.type_filter }}
+    <button type="submit" value="filter" class="pure-button pure-button-primary">Filter</button>
+  </fieldset>
+</form>
+<table class="pure-table">
+  <thead>
+    <tr>
+      {% for field in labelform %}
+      <th>{{ field.label }}</th>
+      {% endfor %}
+      <th>Created at</th>
+      <th>Created by</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in issues %}
+    <tr>
+      <td>{{ item.name }}</td>
+      {% if issue_type != 'suggest' %}
+      <td>{{ item.date }}</td>
+      {% endif %}
+      {% if issue_type == 'defect' %}
+      <td>{{ item.project }}</td>
+      {% endif %}
+      <td>{{ item.description }}</td>
+      <td>{{ item.created }}</td>
+      <td>{{ item.first_name }} {{ item.last_name }}</td>
+      <td>{{ item.get_status_display }}</td>
+      <td>
+        <a href="{% url 'issue_detailed' item.id %}"><span class="material-symbols-outlined">visibility</span></a> 
+        
+        {% if perms.reg.change_issue %}
+        <a href="{% url 'issue_update' item.id %}"><span class="material-symbols-outlined">edit</span></a> 
+        <a href="{% url 'issue_status_change' item.id %}"><span class="material-symbols-outlined">change_circle</span></a>
+        {% endif %}
+       
+        {% if perms.reg.delete_issue %}
+        <a href="{% url 'issue_delete' item.id %}"><span class="material-symbols-outlined">delete</span></a> 
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

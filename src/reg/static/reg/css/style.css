@@ -1,0 +1,64 @@
+.footer {
+    color: #666;
+    text-align: center;
+    padding: 1em;
+    font-size: 80%;
+}
+
+.content {
+    padding: 1em;
+}
+
+.restricted-width {
+    /* To limit the menu width to the content of the menu: */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle; 
+}
+
+.margin3px {
+    margin: 3px;
+} 
+
+.material-symbols-outlined {
+    vertical-align: -6px;
+}
+
+.alert {
+    padding: 20px;
+    color: white;
+    opacity: 0.83;
+    transition: opacity 0.6s;
+    margin-bottom: 15px;
+}
+
+.alert.error {background-color: #f44336;}
+.alert.debug {background-color: #f44336;}
+.alert.success {background-color: #04AA6D;}
+.alert.info {background-color: #2196F3;}
+.alert.warning {background-color: #ff9800;}
+
+.closebtn {
+    padding-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 20px;
+    line-height: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+
+a.calendar:link { text-decoration: none; }
+a.calendar:visited { text-decoration: none; }
+a.calendar:hover { text-decoration: none; }
+a.calendar:active { text-decoration: none; }
+
+td#today, th#today {
+    border: 2px solid black;
+}

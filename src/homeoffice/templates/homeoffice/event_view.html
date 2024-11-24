@@ -1,0 +1,34 @@
+{% extends "homeoffice/base.html" %}
+  {% block title %}Detailed event view{% endblock %}
+  {% block content %}
+  <h1>Detailed event </h1>
+  <ul>
+    {% if employee %}
+    <li>Employee: {{ employee }}</li>
+    {% elif eag %}
+    <li>Employee group: {{ eag }}</li>
+    {% else %}
+    <li>Holiday</li>
+    {% endif %}
+    {% if absence_type %}
+    <li>Absence type: {{ absence_type }} ({{ absence_descr }})</li>
+    {% endif %}
+    <li>Period: ab {{ event.start_date }} bis {{ event.end_date}}</li>
+    <li>Day type: {{ event.get_day_type_display }}</li>
+    <li>Comment: {{ event.comment }}</li>
+    <li>Author: {{ created_by }}</li>
+    <li>Created: {{ event.created }}</li>
+  </ul>{% if perms.homeoffice.change_own and user == employee %}
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-selected"><a href="{% url 'event_edit' id %}" class="pure-menu-link"><span class="material-symbols-outlined">edit</span></a></li> 
+      <li class="pure-menu-item pure-menu-selected"><a href="{% url 'event_delete' id %}" class="pure-menu-link"><span class="material-symbols-outlined">delete</span></a></li>
+    </ul>
+  </div>{% elif perms.homeoffice.change_all %}
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-selected"><a href="{% url 'event_edit' id %}" class="pure-menu-link"><span class="material-symbols-outlined">edit</span></a></li> 
+      <li class="pure-menu-item pure-menu-selected"><a href="{% url 'event_delete' id %}" class="pure-menu-link"><span class="material-symbols-outlined">delete</span></a></li>
+    </ul>
+  </div>{% endif %}
+  {% endblock %}

@@ -1,0 +1,21 @@
+{% extends "../reg/base.html" %}
+{% block title %}Anmelden{% endblock %}
+{% block content %}
+<h1>Anmelden</h1>
+{% if form.errors %}
+<p>Dein Benutzername und Passwort stimmen nicht überein. Bitte versuche es erneut.</p>
+{% endif %}
+
+<form class="pure-form pure-form-stacked" method="post" action="{% url 'login' %}">
+  <fieldset>
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" value="login" class="pure-button pure-button-primary">Anmelden</button>
+    <input type="hidden" name="next" value="{{ next }}">
+  </fieldset>
+</form>
+
+{# Assumes you set up the password_reset view in your URLconf #}
+<p><a href="{% url 'password_reset' %}">Kennwort verloren?</a></p>
+
+{% endblock %}

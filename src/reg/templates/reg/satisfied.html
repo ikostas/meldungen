@@ -1,0 +1,14 @@
+{% extends "reg/base.html" %}
+	{% block title %}Customer satisfaction{% endblock %}
+	{% block content %}
+	{% load static %}
+	<h1>Customer satisfaction</h1>
+	<div class="pure-menu restricted-width">
+		<ul class="pure-menu-list centered-menu">
+			<li class="pure-menu-item"><a href="https://forms.office.com/pages/responsepage.aspx?id=" class="pure-menu-link pure-button pure-button-primary margin3px">To the form</a></li>
+			<li class="pure-menu-item"><img width="300" height="300" alt="QR Code" src="{% static 'reg/images/satisfied-form.png' %}"></li>
+			<li class="pure-menu-item"><a href="{% url 'menu' %}" class="pure-menu-link pure-button pure-button-primary margin3px">Back</a></li>
+		</ul>
+	</div>
+	{% endblock %}
+
